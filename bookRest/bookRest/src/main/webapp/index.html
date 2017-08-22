@@ -1,0 +1,861 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Experiment</title>
+<script src="jquery-1.11.3.min.js"></script>
+<script src="underscore-min.js"></script>
+<script src="backbone-min.js"></script>
+<script src="javal.js"></script>
+<script src="NewUserForm.js"></script>
+<script src="admin.js"></script>
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"/>
+<link rel="stylesheet" href="style.css" />
+<style type="text/css">
+.loading {
+  position: fixed;
+  z-index: 999;
+  height: 2em;
+  width: 2em;
+  overflow: show;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+/* Transparent Overlay */
+.loading:before {
+  content: '';
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.3);
+}
+
+/* :not(:required) hides these rules from IE9 and below */
+.loading:not(:required) {
+  /* hide "loading..." text */
+  font: 0/0 a;
+  color: transparent;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+}
+
+.loading:not(:required):after {
+  content: '';
+  display: block;
+  font-size: 10px;
+  width: 1em;
+  height: 1em;
+  margin-top: -0.5em;
+  -webkit-animation: spinner 1500ms infinite linear;
+  -moz-animation: spinner 1500ms infinite linear;
+  -ms-animation: spinner 1500ms infinite linear;
+  -o-animation: spinner 1500ms infinite linear;
+  animation: spinner 1500ms infinite linear;
+  border-radius: 0.5em;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.5) -1.5em 0 0 0, rgba(0, 0, 0, 0.5) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+  box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) -1.5em 0 0 0, rgba(0, 0, 0, 0.75) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+}
+
+/* Animation */
+
+@-webkit-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-moz-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-o-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: white;
+}
+</style>
+<!-- Book Search -->
+<script type="text/template" id="userkanaam">
+<h3><span class="first_name" style="float:right"><label>Hello, <%=firstName%> <%=lastName%> </label></span><br></h3>
+<div style="  color: #333;
+  font-family: sans-serif;
+  font-size: .9em;
+  border: 1px dashed #ccc;
+  padding: 1em;
+  background: #eee;
+  margin: 1em;
+  transition: all 1s ease;">
+<h2>Search Book</h2>
+<form id="search">
+Search:<input type="text" id="stitle" class="in" name="in" /><br /><br />
+<input type="radio" value="title" id="title" name="s" class="n" />Search by Book Title <br>
+<input type="radio" value="author" id="author" name="s" class="n" />Search by Book's Author Name <br>
+<input type="radio" id="isbn" value="isbn" name="s" class="n"/>Search by ISBN <br>
+<input type="radio" id="issn" value="issn" name="s" class="n"/>Search by ISSN <br>
+<input type="radio" id="publisher" value="publisher" name="s" class="n"/>Search by Publisher <br>
+<input type="radio" id="subject" value="subject" name="s" class="n"/>Search by Subject <br>
+<button id="sec" type="submit">Submit</button>
+</form>
+<h5>Click on the result to see more details</h5>
+</div>
+</script>
+<!-- User login -->
+<script type="text/template" id="loginView">
+<center>
+<div  style="  color: #333;
+  font-family: sans-serif;
+  font-size: .9em;
+  border: 1px dashed #ccc;
+  padding: 1em;
+  background: #eee;
+  margin: 1em;
+  transition: all 1s ease;">
+<form id="login" method="get">
+<h2> Book Management System </h2>
+<h3> Enter Your Login Credentials </h3>
+<label> Email ID: </label><input type="text" id="uname" name="username" />
+<br><br>
+<label> Password: </label><input type="password" id="pass" name="password" />
+<br>
+<br>
+<button id="l" type="submit">Login</button>
+<button id="new" type="button">New User</button>
+</form>
+</div>
+</center>
+</script>
+
+<script type="text/template" id="searchV">
+<div id="<%=bookid%>" class="searchres" style="  color: #333;
+  font-family: sans-serif;
+  font-size: .9em;
+  border: 1px dashed #ccc;
+  padding: 1em;
+  background: #eee;
+  margin: 1em;
+  transition: all 1s ease;">
+<div id="title" style="position:relative; margin:5px 5px"><b>Title:</b> <%=title%></div>
+<div id="pub" style="position:relative; margin:5px 5px" ><b>Publisher:</b> <%=publisher%></div>
+<div id="auth" style="position:relative; margin:5px 5px"> <b>Author:</b> <%=author%></div>
+<div id="status" style="position:relative; margin:5px 5px"><b>Availability Status:</b> <%=booksAvailable%></div></div><br>
+</script>
+
+<script type="text/template" id="detailView">
+<div id="detail" style="  color: #333;
+  font-family: sans-serif;
+  font-size: .9em;
+  border: 1px dashed #ccc;
+  padding: 1em;
+  background: #eee;
+  margin: 1em;
+  transition: all 1s ease;">
+<center><h3> Book Details </h3></center>
+<table>
+<tr>
+<td><b> Title</b></td>:<td><b> <%=title%></b></td>
+</tr>
+<tr>
+<td><b> Publisher: </b></td><td><%=publisher%> </td>
+</tr>
+<tr>
+<td><b> Author: </b></td><td><%=author%> </td>
+</tr>
+<tr>
+<td> <b>Publicaion Date: </b></td><td><%=publicationDate%></td>
+</tr>
+<tr>
+<td> <b>Edition: </b></td><%=edition%></td>
+</tr>
+<tr>
+<td> <b> ISBN: </b></td><td> <%=isbn%></td>
+</tr>
+<tr>
+<td> <b>ISSN: </b></td><td> <%=issn%></td>
+</tr>
+<tr>
+<td> <b>Number of books available: </b></td><td> <%=booksAvailable%> </td>
+</tr>
+</table>
+<hr />
+<center><button id="res" style="position:relative; margin:5px 5px 5px 5px;">Reserve this book</button></center>
+</div>
+
+</script>
+
+
+
+<script type="text/template" id="newUserForm">
+<div id="newUForm" style="  color: #333;
+  font-family: sans-serif;
+  font-size: .9em;
+  border: 1px dashed #ccc;
+  padding: 1em;
+  background: #eee;
+  margin: 1em;
+  transition: all 1s ease;">
+<br>
+<h3> New User Registration Form </h3>
+<form id="newUser">
+<table>
+<tr>
+<td>First Name:</td><td><input type="text" id="fname" class="in" name="fname" /></td>
+</tr>
+<tr>
+<td>Last Name:</td><td><input type="text" id="lname" class="in" name="lname" /></td>
+</tr>
+<tr>
+<td>Email Id:</td><td><input type="text" id="email" class="in" name="email" /></td>
+</tr>
+<tr>
+<td>Password:</td><td><input type="password" id="pass" class="in" name="pass" /></td>
+</tr>
+<tr>
+<td>Phone No.:</td><td><input type="text" id="phn" class="in" name="phn" /></td>
+</tr>
+</table>
+<br>
+<center>
+<button id="sec" type="submit">Submit</button>
+</center>
+</form>
+<br>
+</div>
+</script>
+
+<script type="text/template" id="admin">
+
+<div id="n" align="right" style="margin-right:10px">
+<h3> Welcome <%=firstName%> <%=lastName%></h3>
+</div>
+<div id="adminOpt">
+ <div id="cre" class="m" style="color: #333;  font-family: sans-serif;  font-size: .9em;  border: 1px dashed #ccc;  padding: 1em;
+  background: #eee;
+  margin: 1em;
+  transition: all 1s ease;">
+  
+  <h3> Create New Book Entry</h3>
+  </div>
+  
+<div id="edit" class="m" style=" color: #333;  font-family: sans-serif;  font-size: .9em;  border: 1px dashed #ccc;  padding: 1em;
+  background: #eee;
+  margin: 1em;
+  transition: all 1s ease;">
+  
+  <h3> Edit/Delete a Book Entry</h3>
+  </div>
+  
+    <div id="ViewOrder" class="m" style="  color: #333;  font-family: sans-serif;  font-size: .9em;  border: 1px dashed #ccc;  padding: 1em;
+  background: #eee;
+  margin: 1em;
+  transition: all 1s ease;">
+  
+  <h3> View Orders</h3>
+  </div>
+  
+    <div id="issueperiodlatefee" class="m" style="  color: #333;  font-family: sans-serif;  font-size: .9em;  border: 1px dashed #ccc;  padding: 1em;
+  background: #eee;
+  margin: 1em;
+  transition: all 1s ease;">
+  
+  <h3> Edit Rate/Late Fee</h3>
+  </div>
+</div>
+
+</script>
+
+<script type="text/template" id="entry">
+
+<div id="n" align="right" style="margin-right:10px">
+<h3> Welcome <%=firstName%> <%=lastName%></h3>
+</div>
+<div id="en" style="color: #333;  font-family: sans-serif;  font-size: .9em;  border: 1px dashed #ccc;  padding: 1em;
+  background: #eee;
+  margin: 1em;
+  transition: all 1s ease;">
+  <form id="formEntry" method="post">
+  <b> Title : </b><input id="title" name="title" style="width:80%"/><br /><br />
+  <b> Author : </b><input id="author" name="author" style="width:80%"/><br /><br />
+  <b> Publisher : </b><input id="pub" name="pub" style="width:80%"/><br /><br />
+  <b> Publication Date : </b><input id="pubdate" name="pubdate" style="width:80%"/><br /><br />
+  <b> Subject : </b><input id="sub" name="sub" style="width:80%"/><br /><br />
+  <b> ISBN : </b><input id="isbn" name="isbn" style="width:80%"/><br /><br />
+   <b> ISSN : </b><input id="issn" name="issn" style="width:80%"/><br /><br />
+    <b> Edition : </b><input id="edition" name="edition" style="width:80%"/><br /><br />
+     <b> Total Books : </b><input id="total" name="total" style="width:80%"/><br /><br />
+      <b> Total Books Available : </b><input id="ava" name="ava" style="width:80%"/><br /><br />
+      <button id="subm">Submit</button>
+  </form>
+</div>
+
+
+</script>
+
+<script type="text/template" id="viewing">
+<div id="Opt" style="width:100%">
+<div id="n" align="right" style="margin-right:10px">
+<h3> Welcome <%=firstName%> <%=lastName%></h3>
+</div>
+<div id="adminsearch" style=" color: #333;
+  font-family: sans-serif;
+  font-size: .9em;
+  border: 1px dashed #ccc;
+  padding: 1em;
+  background: #eee;
+  margin: 1em;
+  transition: all 1s ease; overflow:hidden">
+<form id="searchOrder">
+Search by Order ID:<input type="text" id="orderid" class="in" name="orderid" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<button id="secOrder" type="submit">Submit</button>
+</form>
+<br />
+<br />
+<center>
+<div id="all" class="ViewButtons" style=" background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin:10px 5px 10px 5px;">
+View All Orders
+</div>
+<div id="pending" class="ViewButtons" style=" background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+     margin:10px 5px 10px 5px;">
+View Pending Orders
+</div>
+<div id="issued" class="ViewButtons" style=" background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+     margin:10px 5px 10px 5px;">
+View Issued Orders
+</div>
+<div id="defaulters" class="ViewButtons" style=" background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+     margin:10px 5px 10px 5px;">
+View Defaulters
+</div>
+</center>
+</div>
+</div>
+</script>
+
+
+<script type="text/template" id="OrderVi">
+<div id="<%=orderID%>" class="searchres" style="  color: #333;
+  font-family: sans-serif;
+  font-size: .9em;
+  border: 1px dashed #ccc;
+  padding: 1em;
+  background: #eee;
+  margin: 1em;
+  transition: all 1s ease;">
+<div id="orderid" style="position:relative; margin:5px 5px"><b>Order ID:</b> <%=orderID%></div>
+<div id="title" style="position:relative; margin:5px 5px"><b>Title:</b> <%=br.title%></div>
+<div id="pub" style="position:relative; margin:5px 5px" ><b>Publisher:</b> <%=br.publisher%></div>
+<div id="auth" style="position:relative; margin:5px 5px"> <b>Author:</b> <%=br.author%></div>
+<div id="cl" style="position:relative; margin:5px 5px"> <b>Client Name:</b> <%=client.firstName%> <%=client.lastName%></div>
+<div id="bookdate" style="position:relative; margin:5px 5px"> <b>Booking Time:</b> <%=booktimestamp%> </div>
+<div id="phnno" style="position:relative; margin:5px 5px"> <b>Phone No.:</b> <%=client.phoneNo%> </div>
+<div id="email" style="position:relative; margin:5px 5px"> <b>Email ID:</b> <%=client.emailID%> </div>
+<div id="noOfCopies" style="position:relative; margin:5px 5px"> <b>No. of Copies:</b> <%=noOfCopies%> </div>
+<div id="bookstat" style="position:relative; margin:5px 5px"> <b>Booking Status:</b> <%=statusOfBooking%> </div>
+
+<div id="confirm" style="position:relative; margin:5px 5px">
+<button id="a" type="button">Issue Book</button>
+
+</div>
+</div>
+</script>
+
+
+
+<script type="text/template" id="OrderViewIssued">
+<div id="<%=orderID%>" class="searchres" style="  color: #333;
+  font-family: sans-serif;
+  font-size: .9em;
+  border: 1px dashed #ccc;
+  padding: 1em;
+  background: #eee;
+  margin: 1em;
+  transition: all 1s ease;">
+<div id="orderid" style="position:relative; margin:5px 5px"><b>Order ID:</b> <%=orderID%></div>
+<div id="title" style="position:relative; margin:5px 5px"><b>Title:</b> <%=br.title%></div>
+<div id="pub" style="position:relative; margin:5px 5px" ><b>Publisher:</b> <%=br.publisher%></div>
+<div id="auth" style="position:relative; margin:5px 5px"> <b>Author:</b> <%=br.author%></div>
+<div id="cl" style="position:relative; margin:5px 5px"> <b>Client Name:</b> <%=client.firstName%> <%=client.lastName%></div>
+<div id="bookdate" style="position:relative; margin:5px 5px"> <b>Booking Time:</b> <%=booktimestamp%> </div>
+<div id="bookdate" style="position:relative; margin:5px 5px"> <b>Return Time:</b> <%=returntimestamp%> 
+<div id="phnno" style="position:relative; margin:5px 5px"> <b>Phone No.:</b> <%=client.phoneNo%> </div>
+<div id="email" style="position:relative; margin:5px 5px"> <b>Email ID:</b> <%=client.emailID%> </div>
+<div id="noOfCopies" style="position:relative; margin:5px 5px"> <b>No. of Copies:</b> <%=noOfCopies%> </div>
+<div id="bookstat" style="position:relative; margin:5px 5px"> <b>Booking Status:</b> <%=statusOfBooking%> </div>
+
+<div id="confirm" style="position:relative; margin:5px 5px">
+<button id="return" type="button">Book Return</button>
+
+</div>
+</div>
+</script>
+
+<script type="text/template" id="EditViewDetailed">
+<div id="newUForm" style=" color: #333;
+  font-family: sans-serif;
+  font-size: .9em;
+  border: 1px dashed #ccc;
+  padding: 1em;
+  background: #eee;
+  margin: 1em;
+  transition: all 1s ease; overflow:hidden">
+<br>
+<form id="BookEdit">
+<div style="width:20%; ">
+<br />
+<br />
+Book ID
+<div style="position:relative; width:50%; float:right;">
+<label> <%=bookid%></label>
+</div>
+</div>
+<div style="width:20%; position:relative; float:left">
+<br />
+<br />
+Title:
+<div id="abc"  style="position:relative; width:50%; float:right;">
+<input type="text"  id="title" class="inadmin" name="title" value="<%=title%>" />
+</div>
+</div>
+<br />
+<br />
+<div style="width:20%;">
+<br />
+<br />
+Author:
+<div style="position:relative; width:50%; float:right;">
+<input type="text" id="author"  class="inadmin" name="author" value="<%=author%>" />
+</div>
+</div>
+
+<div style="width:20%; ">
+<br />
+<br />
+Publisher:
+<div style="position:relative; width:50%; float:right;">
+<input type="text" id="pub"   class="inadmin" name="publisher" value="<%=publisher%>"/>
+</div>
+</div>
+
+<div style="width:20%; ">
+<br />
+<br />
+Publication Date:
+<div style="position:relative; width:50%; float:right;">
+<input type="text" id="pubdate"  class="inadmin" name="publicationDate" value="<%=publicationDate%>"/>
+</div>
+</div>
+
+<div style="width:20%; ">
+<br />
+<br />
+Subject:
+<div style="position:relative; width:50%; float:right;">
+<input type="text" id="sub"  class="inadmin" name="subject" value="<%=subject%>"/>
+</div>
+</div>
+
+<div style="width:20%; ">
+<br />
+<br />
+Edition:
+<div style="position:relative; width:50%; float:right;">
+<input type="text" id="ed"  class="inadmin" name="edition" value="<%=edition%>"/>
+</div>
+</div>
+
+<div style="width:20%; ">
+<br />
+<br />
+ISBN:
+<div style="position:relative; width:50%; float:right;">
+<input type="text" id="isbn" class="inadmin" name="isbn" value="<%=isbn%>"/>
+</div>
+</div>
+
+<div style="width:20%; ">
+<br />
+<br />
+ISSN:
+<div style="position:relative; width:50%; float:right;">
+<input type="text" id="issn"   class="inadmin" name="issn" value="<%=issn%>"/>
+</div>
+</div>
+
+<div style="width:20%; ">
+<br />
+<br />
+Total Books:
+<div style="position:relative; width:50%; float:right;">
+<input type="text" id="totalbooks" class="inadmin" name="totalbooks" value="<%=totalBooks%>"/>
+</div>
+</div>
+<br />
+<br />
+<button id="updaterecord" type="submit">Submit</button>
+</form>
+</div>
+
+</script>
+
+
+<script type="text/template" id="DeleteViewDetailed">
+<div id="newUForm" style=" color: #333;
+  font-family: sans-serif;
+  font-size: .9em;
+  border: 1px dashed #ccc;
+  padding: 1em;
+  background: #eee;
+  margin: 1em;
+  transition: all 1s ease; overflow:hidden">
+<br>
+<form id="BookEdit">
+<div style="width:20%; ">
+<br />
+<br />
+Book ID
+<div style="position:relative; width:50%; float:right;">
+<label> <%=bookid%></label>
+</div>
+</div>
+<div style="width:20%; position:relative; float:left">
+<br />
+<br />
+Title:
+<div id="abc"  style="position:relative; width:50%; float:right;">
+<label> <%=title%></label
+</div>
+</div>
+<br />
+<br />
+<div style="width:20%;">
+<br />
+<br />
+Author:
+<div style="position:relative; width:50%; float:right;">
+<label> <%=author%></label
+</div>
+</div>
+
+<div style="width:20%; ">
+<br />
+<br />
+Publisher:
+<div style="position:relative; width:50%; float:right;">
+<label> <%=publisher%></label
+</div>
+</div>
+
+<div style="width:20%; ">
+<br />
+<br />
+Publication Date:
+<div style="position:relative; width:50%; float:right;">
+<label> <%=publicationDate%></label
+</div>
+</div>
+
+<div style="width:20%; ">
+<br />
+<br />
+Subject:
+<div style="position:relative; width:50%; float:right;">
+<label> <%=subject%></label
+</div>
+</div>
+
+<div style="width:20%; ">
+<br />
+<br />
+Edition:
+<div style="position:relative; width:50%; float:right;">
+<label> <%=edition%></label
+</div>
+</div>
+
+<div style="width:20%; ">
+<br />
+<br />
+ISBN:
+<div style="position:relative; width:50%; float:right;">
+<label> <%=isbn%></label
+</div>
+</div>
+
+<div style="width:20%; ">
+<br />
+<br />
+ISSN:
+<div style="position:relative; width:50%; float:right;">
+<label> <%=issn%></label
+</div>
+</div>
+
+<div style="width:20%; ">
+<br />
+<br />
+Total Books:
+<div style="position:relative; width:50%; float:right;">
+<label> <%=totalBooks%></label>
+</div>
+</div>
+<br />
+<br />
+<button id="del" type="button">Delete</button>
+</form>
+</div>
+
+</script>
+
+<script type="text/template" id="EditViewSearchAdmin">
+<div align="right" id="p" style="margin-right: 10px;">
+<h3> Welcome me great</h3>
+</div>
+<div id="adminsearch" style="background: rgb(238, 238, 238); margin: 1em; padding: 1em; border: 1px dashed rgb(204, 204, 204); transition:1s; border-image: none; color: rgb(51, 51, 51); overflow: hidden; font-family: sans-serif; font-size: 0.9em;">
+<h2>Edit Book Entry</h2>
+<form id="searchAdmin">
+Search:<input name="in" class="in" id="stitle" type="text"><br><br>
+<input name="s" class="n" id="bookid" type="radio" value="bookid">Search by Book ID <br>
+<input name="s" class="n" id="title" type="radio" value="title">Search by Book Title <br>
+<input name="s" class="n" id="author" type="radio" value="author">Search by Book's Author Name <br>
+<input name="s" class="n" id="isbn" type="radio" value="isbn">Search by ISBN <br>
+<input name="s" class="n" id="issn" type="radio" value="issn">Search by ISSN <br>
+<input name="s" class="n" id="publisher" type="radio" value="publisher">Search by Publisher <br>
+<input name="s" class="n" id="subject" type="radio" value="subject">Search by Subject <br><br>
+<button id="secAdmin" type="submit">Submit</button>
+</form>
+</div>
+</script>
+
+<script type="text/template" id="AdminSearchEditBook">
+
+<div id="<%=bookid%>" class="AdminSearchResEditView" style="  color: #333;
+  font-family: sans-serif;
+  font-size: .9em;
+  border: 1px dashed #ccc;
+  padding: 1em;
+  background: #eee;
+  margin: 1em;
+  transition: all 1s ease;">
+
+<div id="title" style="position:relative; margin:5px 5px"><b>Title:</b> <%=title%></div>
+<div id="pub" style="position:relative; margin:5px 5px" ><b>Publisher:</b> <%=publisher%></div>
+<div id="auth" style="position:relative; margin:5px 5px"> <b>Author:</b> <%=author%></div>
+<button id="edit" type="button">Edit</button>
+<button id="delete" type="button">Delete</button>
+</div>
+
+</script>
+
+<script type="text/template" id="orderReceipt">
+<center>
+<div style="  color: #333;
+  font-family: sans-serif;
+  font-size: .9em;
+  border: 1px dashed #ccc;
+  padding: 1em;
+  background: #eee;
+  margin: 1em;
+  transition: all 1s ease;">
+  <h2> BOOKING CONFIRMATION RECEIPT</h2>
+<br>
+<div id="orderid" style="position:relative; margin:5px 5px"><b>Order ID:</b> <%=orderid%></div>
+<div id="title" style="position:relative; margin:5px 5px"><b>Name:</b> <%=firstName%> <%=lastName%></div>
+<div id="pub" style="position:relative; margin:5px 5px" ><b>Title:</b> <%=title%></div>
+<div id="auth" style="position:relative; margin:5px 5px"> <b>Number of Copies Booked:</b> <%=copiesBooked%></div>
+<br />
+<br />
+<button type="button" id="print">Print</button>
+</div>
+</center>
+</script>
+
+<script type="text/template" id="BillReceipt">
+<center>
+<div style="  color: #333;
+  font-family: sans-serif;
+  font-size: .9em;
+  border: 1px dashed #ccc;
+  padding: 1em;
+  background: #eee;
+  margin: 1em;
+  transition: all 1s ease;">
+  <h2> RECEIPT</h2>
+<div id="orderid" style="position:relative; margin:5px 5px"><b>Order ID:</b> <%=details.attributes.orderID%></div>
+<div id="title" style="position:relative; margin:5px 5px"><b>Name:</b> <%=details.attributes.client.firstName%> <%=details.attributes.client.lastName%></div>
+<div id="date" style="position:relative; margin:5px 5px" ><b>Date:</b> <%=late.attributes.todaydate%></div>
+<br />
+<table>
+  <tr>
+    <th>Title</th>
+    <th>Number Of Copies</th>
+    <th>Booking Time</th>
+    <th>Return Date</th>
+<th>Number of days Defaulter</th> 
+    <th>Late Fee/ Day</th>
+
+    <th>Total Fee</th>
+  </tr>
+  <tr>
+  <th><%=details.attributes.br.title%></th>
+  <th><%=details.attributes.noOfCopies%></th>
+  <th><%=details.attributes.booktimestamp%></th>
+  <th><%=details.attributes.returntimestamp%></th>
+<th><%=late.attributes.days%></th>
+  <th>Rs. <%=late.attributes.latefee%></th>
+  <th>Rs. <%=late.attributes.total%></th>
+  </tr>
+
+</table>
+<br />
+<br />
+
+<button type="button" id="print">Print</button>
+</div>
+
+</center>
+
+</script>
+
+<script type="text/template" id="issuePeriodlatefeeView">
+<div style="  color: #333;
+  font-family: sans-serif;
+  font-size: .9em;
+  border: 1px dashed #ccc;
+  padding: 1em;
+  background: #eee;
+  margin: 1em;
+  transition: all 1s ease;">
+  <h2> Edit Late Fee/ Issue Period</h2>
+<br>
+<form id="setlateissue">
+<table>
+<tr>
+<td>Late Fee(Rs.)</td><td><input type="text" name="lateFee" value="<%=latefee%>" id="lateFee" /></td>
+</tr>
+<tr>
+<td>Issue Period(in days)</td><td><input type="text" name="issue" value="<%=issue%>" id="issue" /></td>
+</tr>
+<br />
+
+</table>
+<center><button type="submit" id="s">Submit</button></center>
+</form>
+</div>
+</script>
+<script type="text/template" id="whileLoading">
+<div class="loading">Loading&#8230;</div>
+
+</script>
+
+</head>
+
+<body>
+<div id="test">
+
+</div>
+
+<div id="res">
+</div>
+</body>
+</html>
